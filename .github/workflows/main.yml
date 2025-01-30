@@ -26,9 +26,10 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@18.184.172.10 << EOF
             sudo apt update -y
+            sudo su
             cd /var/www/html
             git status
-            git pull
+            git pull origin main
             cp /home/ubuntu/.env /var/www/html/.env
           EOF
 
