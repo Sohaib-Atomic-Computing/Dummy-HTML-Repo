@@ -24,12 +24,12 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@63.176.145.218 << EOF
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@18.184.172.10 << EOF
             sudo apt update -y
             cd /var/www/html
             git status
             git pull
-            cp /home/.env /var/www/html/.env
+            cp /home/ubuntu/.env /var/www/html/.env
           EOF
 
       - name: Create AMI of EC2 instance
