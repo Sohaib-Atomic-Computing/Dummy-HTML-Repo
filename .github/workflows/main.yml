@@ -63,7 +63,7 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          NEW_VERSION=$(aws ec2 create-launch-template-version --launch-template-id lt-0a20870bef3300c14 --source-version 1 --version-description "Updated with new AMI" --launch-template-data "{\"ImageId\":\"${{ steps.create_ami.outputs.AMI_ID }}\"}" --query 'LaunchTemplateVersion.VersionNumber' --output text --region $AWS_DEFAULT_REGION)
+          NEW_VERSION=$(aws ec2 create-launch-template-version --launch-template-id lt-0a20870bef3300c14 --source-version 1 --version-description "Updated with new AMI" --launch-template-data "{\"ImageId\":\"${{ steps.create_ami.outputs.AMI_ID }}\", \"InstanceType\":\"t3.micro\"}" --query 'LaunchTemplateVersion.VersionNumber' --output text --region $AWS_DEFAULT_REGION)
           echo "::set-output name=NEW_VERSION::$NEW_VERSION"
 
       - name: Update Auto Scaling Group
