@@ -43,7 +43,7 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          AMI_ID=$(aws ec2 create-image --instance-id i-0a8855e8d9f222443 --name "MyServer-$(date +%Y%m%d%H%M%S)" --no-reboot --query 'ImageId' --output text --region $AWS_DEFAULT_REGION)
+          AMI_ID=$(aws ec2 create-image --instance-id i-0402afff6738c0219 --name "MyServer-$(date +%Y%m%d%H%M%S)" --no-reboot --query 'ImageId' --output text --region $AWS_DEFAULT_REGION)
           echo "::set-output name=AMI_ID::$AMI_ID"
 
       - name: Update launch template
