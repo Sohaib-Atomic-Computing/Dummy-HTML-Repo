@@ -63,7 +63,7 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          NEW_VERSION=$(aws ec2 create-launch-template-version --launch-template-id lt-0a20870bef3300c14 --source-version 1 --version-description "Updated with new AMI" --launch-template-data "{\"ImageId\":\"${{ steps.create_ami.outputs.AMI_ID }}\", \"InstanceType\":\"t3.micro\"}" --query 'LaunchTemplateVersion.VersionNumber' --output text --region $AWS_DEFAULT_REGION)
+          NEW_VERSION=$(aws ec2 create-launch-template-version --launch-template-id lt-0c8e191ecaf53e039 --source-version 1 --version-description "Updated with new AMI" --launch-template-data "{\"ImageId\":\"${{ steps.create_ami.outputs.AMI_ID }}\", \"InstanceType\":\"t2.micro\"}" --query 'LaunchTemplateVersion.VersionNumber' --output text --region $AWS_DEFAULT_REGION)
           echo "::set-output name=NEW_VERSION::$NEW_VERSION"
 
       - name: Update Auto Scaling Group
@@ -74,5 +74,5 @@ jobs:
           AWS_DEFAULT_REGION: eu-central-1
         run: |
           NEW_VERSION=${{ steps.update_template.outputs.NEW_VERSION }}
-          aws autoscaling update-auto-scaling-group --auto-scaling-group-name Kabseh-POC-ASG --launch-template "LaunchTemplateId=lt-0a20870bef3300c14,Version=$NEW_VERSION" --region $AWS_DEFAULT_REGION
-          aws autoscaling start-instance-refresh --auto-scaling-group-name Kabseh-POC-ASG --preferences '{"InstanceWarmup": 300, "MinHealthyPercentage": 50}' --region $AWS_DEFAULT_REGION
+          aws autoscaling update-auto-scaling-group --auto-scaling-group-name Testing-ASG --launch-template "LaunchTemplateId=lt-0c8e191ecaf53e039,Version=$NEW_VERSION" --region $AWS_DEFAULT_REGION
+          aws autoscaling start-instance-refresh --auto-scaling-group-name Testing-ASG --preferences '{"InstanceWarmup": 300, "MinHealthyPercentage": 50}' --region $AWS_DEFAULT_REGION
