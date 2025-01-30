@@ -23,6 +23,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@18.184.172.10 << EOF
@@ -39,6 +40,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
           AMI_ID=$(aws ec2 create-image --instance-id i-0a8855e8d9f222443 --name "MyServer-$(date +%Y%m%d%H%M%S)" --no-reboot --query 'ImageId' --output text --region $AWS_DEFAULT_REGION)
@@ -48,6 +50,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
           aws ec2 create-launch-template-version --launch-template-id lt-0a20870bef3300c14 --source-version 1 --version-description "Updated with new AMI" --launch-template-data "{\"ImageId\":\"${{ steps.create_ami.outputs.AMI_ID }}\"}" --region $AWS_DEFAULT_REGION
@@ -56,6 +59,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
           aws autoscaling update-auto-scaling-group --auto-scaling-group-name Kabseh-POC-ASG --launch-template "LaunchTemplateId=lt-0a20870bef3300c14,Version=$Latest" --region $AWS_DEFAULT_REGION
