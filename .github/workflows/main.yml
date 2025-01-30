@@ -43,7 +43,7 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          AMI_ID=$(aws ec2 create-image --instance-id i-0402afff6738c0219 --name "MyServer-$(date +%Y%m%d%H%M%S)" --no-reboot --query 'ImageId' --output text --region $AWS_DEFAULT_REGION)
+          AMI_ID=$(aws ec2 create-image --instance-id i-0a8855e8d9f222443 --name "MyServer-$(date +%Y%m%d%H%M%S)" --no-reboot --query 'ImageId' --output text --region $AWS_DEFAULT_REGION)
           echo "::set-output name=AMI_ID::$AMI_ID"
 
       - name: Update launch template
@@ -62,5 +62,5 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          aws autoscaling update-auto-scaling-group --auto-scaling-group-name Kabseh-POC-ASG --launch-template "LaunchTemplateId=lt-0a20870bef3300c14,Version=$Latest" --region $AWS_DEFAULT_REGION
+          aws autoscaling update-auto-scaling-group --auto-scaling-group-name Kabseh-POC-ASG --launch-template "LaunchTemplateId=lt-0a20870bef3300c14,Version='$Latest'" --region $AWS_DEFAULT_REGION
           aws autoscaling start-instance-refresh --auto-scaling-group-name Kabseh-POC-ASG --preferences '{"InstanceWarmup": 300, "MinHealthyPercentage": 50}' --region $AWS_DEFAULT_REGION
