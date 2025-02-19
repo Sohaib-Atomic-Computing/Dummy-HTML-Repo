@@ -66,6 +66,25 @@ jobs:
           NEW_VERSION=$(aws ec2 create-launch-template-version --launch-template-id lt-0c8e191ecaf53e039 --source-version 1 --version-description "Updated with new AMI" --launch-template-data "{\"ImageId\":\"${{ steps.create_ami.outputs.AMI_ID }}\", \"InstanceType\":\"t2.micro\"}" --query 'LaunchTemplateVersion.VersionNumber' --output text --region $AWS_DEFAULT_REGION)
           echo "::set-output name=NEW_VERSION::$NEW_VERSION"
 
+      - name: Check for existing instance refresh
+        id: check_refresh
+        run: |
+          REFRESH_STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name Testing-ASG --query 'InstanceRefreshes[?Status==`InProgress`].InstanceRefreshId' --output text --region $AWS_DEFAULT_REGION)
+          if [ -n "$REFRESH_STATUS" ]; then
+            echo "Instance refresh in progress. Cancelling refresh."
+            CANCEL_STATUS=$(aws autoscaling cancel-instance-refresh --auto-scaling-group-name Testing-ASG --query 'InstanceRefreshes[?Status==`Cancelled`].InstanceRefreshId' --output text --region $AWS_DEFAULT_REGION)
+            if [ -n "$CANCEL_STATUS" ]; then
+              echo "Instance refresh cancelled successfully."
+              echo "REFRESH_STATUS=cancelled" >> $GITHUB_ENV
+            else
+              echo "Failed to cancel instance refresh."
+              exit 1
+            fi
+          else
+            echo "No instance refresh in progress."
+            echo "REFRESH_STATUS=none" >> $GITHUB_ENV
+          fi
+
       - name: Update Auto Scaling Group
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
