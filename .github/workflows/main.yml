@@ -79,5 +79,5 @@ jobs:
 
       - name: Invoke Lambda to Clean Up Old AMIs
         run: |
-          aws lambda invoke --function-name Testing-Function response.json
+          aws lambda invoke --function-name Testing-Function --region $AWS_DEFAULT_REGION response.json
           cat response.json
