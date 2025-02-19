@@ -69,10 +69,10 @@ jobs:
       - name: Check for existing instance refresh
         id: check_refresh
         run: |
-          REFRESH_STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name Testing-ASG --query 'InstanceRefreshes[?Status==`InProgress`].InstanceRefreshId' --output text --region $AWS_DEFAULT_REGION)
+          REFRESH_STATUS=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name Testing-ASG --query 'InstanceRefreshes[?Status==`InProgress`].InstanceRefreshId' --output text --region eu-central-1)
           if [ -n "$REFRESH_STATUS" ]; then
             echo "Instance refresh in progress. Cancelling refresh."
-            CANCEL_STATUS=$(aws autoscaling cancel-instance-refresh --auto-scaling-group-name Testing-ASG --query 'InstanceRefreshes[?Status==`Cancelled`].InstanceRefreshId' --output text --region $AWS_DEFAULT_REGION)
+            CANCEL_STATUS=$(aws autoscaling cancel-instance-refresh --auto-scaling-group-name Testing-ASG --query 'InstanceRefreshes[?Status==`Cancelled`].InstanceRefreshId' --output text --region eu-central-1)
             if [ -n "$CANCEL_STATUS" ]; then
               echo "Instance refresh cancelled successfully."
               echo "REFRESH_STATUS=cancelled" >> $GITHUB_ENV
