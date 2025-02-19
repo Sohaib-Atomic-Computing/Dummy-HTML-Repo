@@ -26,7 +26,7 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@3.70.226.245 << EOF
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USERNAME }}@18.192.239.228 << EOF
             sudo apt update -y
             sudo su
             cd /var/www/html
@@ -76,3 +76,8 @@ jobs:
           NEW_VERSION=${{ steps.update_template.outputs.NEW_VERSION }}
           aws autoscaling update-auto-scaling-group --auto-scaling-group-name Testing-ASG --launch-template "LaunchTemplateId=lt-0c8e191ecaf53e039,Version=$NEW_VERSION" --region $AWS_DEFAULT_REGION
           aws autoscaling start-instance-refresh --auto-scaling-group-name Testing-ASG --preferences '{"InstanceWarmup": 300, "MinHealthyPercentage": 50}' --region $AWS_DEFAULT_REGION
+
+      - name: Invoke Lambda to Clean Up Old AMIs
+        run: |
+          aws lambda invoke --function-name Testing-Function response.json
+          cat response.json
